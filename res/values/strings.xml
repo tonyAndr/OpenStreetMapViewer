@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Camino Guide Offline</string>
+    <string name="unknown">Unknown</string>
+    <string name="map_mode">Map mode</string>
+    <string name="my_location">My location</string>
+    <string name="offline">Offline mode</string>
+    <string name="samples">Samples</string>
+    <string name="about">About</string>
+    <string name="about_message">This software uses map data provided by &lt;b>OpenStreetMap.org&lt;/b></string>
+    <string name="first_fix_message">Got the first fix</string>
+    <string name="set_mode_offline">Set to offline mode</string>
+    <string name="set_mode_online">Set to online mode</string>
+    <string name="set_mode_show_me">showing and tracking my current location</string>
+    <string name="set_mode_hide_me">hiding my current location</string>
+    <string name="format_distance_meters">%s m</string>
+    <string name="format_distance_kilometers">%s km</string>
+    <string name="format_distance_miles">%s mi</string>
+    <string name="format_distance_nautical_miles">%s nm</string>
+    <string name="format_distance_feet">%s ft</string>
+    <string name="compass">Compass</string>
+    <string name="find_my_location_btn">Find My Location</string>
+    <string name="title_activity_stages_list">StagesListActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_stages">Stages list</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_main_options_title">Main Options</string>
+    <string name="pref_summary_prevent_screenoff">Prevent display disabling while following your location</string>
+    <string name="pref_title_prevent_screenoff">Display always enabled</string>
+    <string name="pref_summary_info_geo">Show your coordinates and altitude on map screen</string>
+    <string name="pref_title_info_geo">Show coordinates</string>
+    <string name="pref_offline_map_options_title">Offline Map</string>
+    <string name="pref_title_rotation">Enable rotation</string>
+    <string name="pref_summary_rotation">Map rotation by gestures</string>
+    <string name="pref_title_locktouch">Lock accidental touching</string>
+    <string name="pref_summary_locktouch">While following your location, any touch-actions will be ignored on map screen</string>
+    <string name="title_activity_stage">Stages</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+    <string-array name="stage_names">
+        <item>Saint Jean Pied de Port - Roncesvalles</item>
+        <item>Roncesvalles - Zubiri</item>
+        <item>Zubiri - Pamplona/Iruña</item>
+        <item>Pamplona/Iruña - Puente la Reina/Gares</item>
+        <item>Puente la Reina/Gares - Estella/Lizarra</item>
+        <item>Estella/Lizarra - Torres del Rio</item>
+        <item>Torres del Río - Logroño</item>
+        <item>Logroño - Nájera</item>
+        <item>Nájera - Santo Domingo de la Calzada</item>
+        <item>Santo Domingo de la Calzada - Belorado</item>
+        <item>Belorado - Agés</item>
+        <item>Agés - Burgos</item>
+        <item>Burgos - Hontanas</item>
+        <item>Hontanas - Boadilla del Camino</item>
+        <item>Boadilla del Camino - Carrión de los Condes</item>
+        <item>Carrión de los Condes - Terradillos de los Templarios</item>
+        <item>Terradillos de los Templarios - El Burgo Ranero</item>
+        <item>El Burgo Ranero - León</item>
+        <item>León - San Martín del Camino</item>
+        <item>San Martín del Camino - Astorga</item>
+        <item>Astorga - Foncebadón</item>
+        <item>Foncebadón - Ponferrada</item>
+        <item>Ponferrada - Villafranca del Bierzo</item>
+        <item>Villafranca del Bierzo - O Cebreiro</item>
+        <item>O Cebreiro - Triacastela</item>
+        <item>Triacastela - Sarria</item>
+        <item>Sarria - Portomarín</item>
+        <item>Portomarín - Palas de Rei</item>
+        <item>Palas de Rei - Arzúa</item>
+        <item>Arzúa - Pedrouzo</item>
+        <item>Pedrouzo - Santiago de Compostela</item>
+    </string-array>
+
+    <string name="title_activity_map_manager">Manage maps</string>
+    <string name="action_delete">Delete maps</string>
+    <string name="action_delete_fragment">Delete maps</string>
+    <string name="action_download_map">Download selected</string>
+    <string name="action_download_fragment">Download maps</string>
+    <string name="action_delete_map">Delete selected</string>
+    <string name="pref_summary_zoom_controls">Enable zoom controls in offline mode</string>
+    <string name="pref_title_zoom_controls">Show zoom controls</string>
+    <string name="pref_summary_stop_follow">When gestures detected, otherwise only follow location button will works</string>
+    <string name="pref_title_stop_follow">Interrupt location follow</string>
+    <string name="pref_map_settings_title">Map Options</string>
+    <string name="pref_summary_offline_mode">Switch map to offline mode</string>
+    <string name="pref_title_offline_mode">Offline mode</string>
+    <string name="pref_key_download_title">Download maps</string>
+    <string name="action_hide_route">Route</string>
+    <string name="action_hide_markers">Markers</string>
+    <string name="distance_to_from_start">From start:</string>
+    <string name="distance_to_finish">To finish:</string>
+    <string name="title_activity_splash">Camino Guide Offline</string>
+    <string name="title_activity_feedback">Feedback</string>
+    <string name="notify_suggestion_text">Please, notify us about any mistakes/errors which you will see (e.g. incorrect albergue\'s coordinates or app crash). You can include you current position using checkbox below.</string>
+    <string name="drawing_loading_route_text">Drawing route...</string>
+    <string name="stage_activity_list_fragment_title">Stages</string>
+    <string name="progress_drawing_route">Drawing route...</string>
+    <string name="progress_drawing_markers">Drawing markers...</string>
+    <string name="send_my_coordinates">Send my location</string>
+    <string name="feedback_thank_you">Thank you!</string>
+    <string name="title_activity_about">AboutActivity</string>
+
+    <string name="about_text">
+This is your personal guide on Camino Frances. You will never lose your way. You will always find a place to sleep.\n
+Camino Guide has offline maps to navigation without internet connection which are very useful on camino. \n
+\n\n
+Most accurate and actual database of albergues. Most accurate albergues coordinates. Very detailed camino route with alternative ways. \n\n
+
+This app will show you the distance to the end of the stage, or the selected albergue. \n\n
+<b>Features:</b>\n
+*Offline and online maps\n
+*Show albergues on map with very accurate position\n
+*Draw camino route with alternatives\n
+*Calculate distance and draw route to selected albergue/hotel\n
+*Show your location and direction\n
+*Show stage profile and current elevation level\n
+*Show stage localities and albergues\n
+*Show your progress on stage (km done/left)\n
+*Albergues details such as phone, beds, address, type\n\n\n
+
+        Important note: Recommended to use online (Google) maps. Offline maps can be slow and unstable.
+
+        \n\n\n
+        Map data © OpenStreetMap contributors\n
+        http://www.openstreetmap.org/copyright
+        \n\n
+
+    </string>
+
+</resources>

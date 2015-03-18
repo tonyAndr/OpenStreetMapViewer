@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/primaryColor"
+    tools:context="com.tonyandr.caminoguide.SplashActivity">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/splash_text" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="@style/CustomProgressBarHorizontal"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:layout_marginBottom="100dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/splash_textview"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/progressBar2"
+        android:layout_alignLeft="@+id/progressBar2"
+        android:layout_alignRight="@+id/progressBar2"
+        android:layout_alignTop="@+id/progressBar2"
+        android:gravity="center"
+        android:textColor="#FFF"
+        android:text="" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar3"
+        android:layout_marginBottom="85dp"
+        android:layout_alignParentBottom="true"
+
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

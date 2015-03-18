@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tonyandr.caminoguide" >
+
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="21" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+
+    <permission
+        android:name="com.tonyandr.caminoguide.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <application
+        android:configChanges="orientation|screenSize|keyboardHidden"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ecn_icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <uses-library
+            android:name="com.google.android.maps"
+            android:required="false" />
+
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="locked"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".map.MapActivity"
+            android:icon="@drawable/ecn_icon"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:launchMode="singleInstance" >
+        </activity>
+        <service
+            android:name=".settings.MoveService"
+            android:exported="false" />
+
+        <activity
+            android:name=".stages.StageActivity"
+            android:label="@string/title_activity_stage"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name=".settings.MapManagerActivity"
+            android:label="@string/title_activity_map_manager"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".settings.SettingsActivity" >
+        </activity>
+
+        <service android:name=".utils.DBUpdateService" >
+        </service>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDWm6rGejKkVypqdiru5gQWJ0Auu0M-I1s" />
+
+        <activity
+            android:name=".feedback.FeedbackActivity"
+            android:label="@string/title_activity_feedback"
+            android:launchMode="singleInstance" >
+        </activity>
+        <activity
+            android:name=".feedback.AboutActivity"
+            android:launchMode="singleInstance"
+            android:label="@string/title_activity_about" >
+        </activity>
+    </application>
+
+</manifest>

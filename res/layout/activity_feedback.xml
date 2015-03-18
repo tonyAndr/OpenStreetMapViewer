@@ -1,0 +1,119 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ripple="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.tonyandr.caminoguide.feedback.FeedbackActivity">
+
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_bar"
+            android:layout_margin="16dp"
+            android:text="@string/notify_suggestion_text" />
+
+        <EditText
+            android:id="@+id/feedback_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/feedback_geo_cb"
+            android:layout_below="@+id/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="48dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="#FFF"
+            android:ems="10"
+            android:gravity="top|left"
+            android:inputType="textMultiLine" />
+
+        <CheckBox
+            android:id="@+id/feedback_geo_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/send_feedback_btn_ripple"
+            android:layout_margin="16dp"
+            android:checked="true"
+            android:text="@string/send_my_coordinates" />
+
+        <com.andexert.library.RippleView
+            android:id="@+id/send_feedback_btn_ripple"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_alignParentBottom="true"
+            ripple:rv_color="#444444"
+            ripple:rv_zoom="true"
+            ripple:rv_centered="false">
+
+            <Button
+                android:id="@+id/send_feedback_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/accentColor"
+                android:text="Send feedback"
+                android:textColor="#FFF" />
+        </com.andexert.library.RippleView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/feedback_success_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/app_bar"
+        android:background="#CC000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="120dp"
+            android:text="@string/feedback_thank_you"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/success" />
+
+        <Button
+            android:id="@+id/feedback_success_OK"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="100dp"
+            android:background="#FFF44444"
+            android:text="OK"
+            android:textColor="#FFF"
+            android:textSize="25sp" />
+
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/fragment_nav_drawer"
+        android:name="com.tonyandr.caminoguide.NavigationDrawerLayout"
+        android:layout_width="@dimen/nav_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:layout="@layout/fragment_navigation_drawer_layout"
+        tools:layout="@layout/fragment_navigation_drawer_layout" />
+</android.support.v4.widget.DrawerLayout>
