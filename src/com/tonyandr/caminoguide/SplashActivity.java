@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -55,6 +56,8 @@ public class SplashActivity extends ActionBarActivity implements AppConstants {
     private int mAlberguesArrayLength;
     private DBControllerAdapter dbControllerAdapter;
     private SharedPreferences mPrefs;
+    private String mFullAppPath = Environment.getExternalStorageDirectory().getPath() + APP_PATH;
+
 //    private JSONArray albergues;
 //    private JSONArray localities;
 
@@ -80,6 +83,7 @@ public class SplashActivity extends ActionBarActivity implements AppConstants {
         setContentView(R.layout.activity_splash);
         mPrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         nullLocation();
+//        new CopyAssetsTask().execute();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar2);
         circleProgressBar = (ProgressBar) findViewById(R.id.progressBar3);
@@ -259,14 +263,14 @@ public class SplashActivity extends ActionBarActivity implements AppConstants {
     }
 
     private void startMapActivity() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(SplashActivity.this, MapActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, SPLASH_SCREEN_DELAY);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(SplashActivity.this, MapActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }, SPLASH_SCREEN_DELAY);
     }
 
     @Override
@@ -299,6 +303,13 @@ public class SplashActivity extends ActionBarActivity implements AppConstants {
             return null;
         }
     }
+
+
+
+
+//    String zipfilepath = getFilesDir().getPath()+"/"+myfile.zip;
+//    String  destinationdir = getFilesDir().getPath();
+
 
 
 

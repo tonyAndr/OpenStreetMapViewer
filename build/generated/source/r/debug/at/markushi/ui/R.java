@@ -18,9 +18,9 @@ public final class R {
 		public static final int plus = 0x7f0c0018;
 	}
 	public static final class integer {
-		public static final int av_animationDuration = 0x7f0d0001;
-		public static final int rcv_animationDurationHide = 0x7f0d0003;
-		public static final int rcv_animationDurationReveal = 0x7f0d0004;
+		public static final int av_animationDuration = 0x7f0d0003;
+		public static final int rcv_animationDurationHide = 0x7f0d0005;
+		public static final int rcv_animationDurationReveal = 0x7f0d0006;
 	}
 	public static final class styleable {
 		public static final int[] ActionView = { 0x7f01001d, 0x7f01001e };

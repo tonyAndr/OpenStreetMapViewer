@@ -73,6 +73,10 @@ public interface AppConstants {
 
     static final String APP_PATH = "/CaminoGuideOffline/";
     static final String APP_OFFLINE_MAP_FILE = "caminofrances.map";
+
+     static final String OSM_FRAGMENT_TAG = "com.tonyandr.caminoguide.osm_tag";
+     static final String MF_FRAGMENT_TAG = "com.tonyandr.caminoguide.mf_tag";
+     static final String GMS_FRAGMENT_TAG = "com.tonyandr.caminoguide.gms_tag";
 	// ===========================================================
 	// Methods
 	// ===========================================================

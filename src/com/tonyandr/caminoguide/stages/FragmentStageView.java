@@ -5,13 +5,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -32,8 +30,6 @@ import com.tonyandr.caminoguide.R;
 import com.tonyandr.caminoguide.constants.AppConstants;
 import com.tonyandr.caminoguide.map.GMapFragment;
 import com.tonyandr.caminoguide.map.MapsForgeFragment;
-import com.tonyandr.caminoguide.map.OSMFragment;
-import com.tonyandr.caminoguide.settings.MapManagerActivity;
 import com.tonyandr.caminoguide.utils.DBControllerAdapter;
 import com.tonyandr.caminoguide.utils.GeoMethods;
 import com.tonyandr.caminoguide.utils.JsonFilesHandler;
@@ -43,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,18 +138,7 @@ public class FragmentStageView extends Fragment implements AppConstants {
                 bundle.putDouble("lat", row.lat);
                 bundle.putDouble("lng", row.lng);
                 bundle.putString("title", row.title);
-                if (Integer.parseInt(settings.getString("pref_key_choose_map", "1")) == 3) {
-                    OSMFragment osmFragment = new OSMFragment();
-                    osmFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    if (fragmentManager.findFragmentByTag("FragmentView") != null) {
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        transaction.replace(R.id.stage_fragment_holder_id, osmFragment, "OSMFragment");
-                        transaction.addToBackStack(OSMFragment.class.getName());
-                        transaction.commit();
-                    }
-                } else if (Integer.parseInt(settings.getString("pref_key_choose_map", "1")) == 1) {
+if (settings.getString("pref_key_choose_map", "1") == GMS_FRAGMENT_TAG) {
                     GMapFragment gMapFragment = new GMapFragment();
                     gMapFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();
@@ -181,18 +165,7 @@ public class FragmentStageView extends Fragment implements AppConstants {
 
             }
         });
-        ImageButton btnDownload = (ImageButton) getActivity().findViewById(R.id.iv_dload_map);
-        if ((new File(Environment.getExternalStorageDirectory().getPath() + "/osmdroid/stage"+stageId+".zip")).exists()){
-            btnDownload.setVisibility(View.GONE);
-        } else {
-            btnDownload.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), MapManagerActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
+
         ImageButton btnGlobe = (ImageButton) getActivity().findViewById(R.id.iv_globe);
         btnGlobe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,19 +178,7 @@ public class FragmentStageView extends Fragment implements AppConstants {
                 bundle.putBoolean("globe", true);
                 bundle.putBoolean("near", near);
 
-
-                if (Integer.parseInt(settings.getString("pref_key_choose_map", "1")) == 3) {
-                    OSMFragment osmFragment = new OSMFragment();
-                    osmFragment.setArguments(bundle);
-                    FragmentManager fragmentManager = getFragmentManager();
-                    if (fragmentManager.findFragmentByTag("FragmentView") != null) {
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        transaction.replace(R.id.stage_fragment_holder_id, osmFragment, "OSMFragment");
-                        transaction.addToBackStack(OSMFragment.class.getName());
-                        transaction.commit();
-                    }
-                } else if (Integer.parseInt(settings.getString("pref_key_choose_map", "1")) == 1) {
+                    if (settings.getString("pref_key_choose_map", "1") == GMS_FRAGMENT_TAG) {
                     GMapFragment gMapFragment = new GMapFragment();
                     gMapFragment.setArguments(bundle);
                     FragmentManager fragmentManager = getFragmentManager();

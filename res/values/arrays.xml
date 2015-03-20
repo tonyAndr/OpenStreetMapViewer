@@ -6,8 +6,8 @@
         <!--<item>Offline - OpenStreetMap</item>-->
     </string-array>
     <string-array name="listValues">
-        <item>1</item>
-        <item>2</item>
+        <item>com.tonyandr.caminoguide.gms_tag</item>
+        <item>com.tonyandr.caminoguide.mf_tag</item>
         <!--<item>3</item>-->
     </string-array>
 </resources>

@@ -73,43 +73,6 @@
                 android:clickable="true"
                 android:src="@drawable/zoom_out" />
 
-            <TextView
-                android:id="@+id/debugGeoOutputTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/app_bar"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#ffffffff"
-                android:text=""
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/debugGeoOutputLat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/debugGeoOutputTime"
-                android:layout_gravity="right|top"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#ffffffff"
-                android:text=""
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/debugGeoOutputLon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/debugGeoOutputLat"
-                android:layout_gravity="right|top"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:background="#ffffffff"
-                android:text=""
-                android:textSize="10sp" />
             <include
                 android:id="@+id/progress_drawing_id"
                 layout="@layout/drawing_progress" />

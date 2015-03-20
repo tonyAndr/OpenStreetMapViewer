@@ -1,9 +1,12 @@
 package com.tonyandr.caminoguide.map;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -11,6 +14,9 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -87,6 +93,7 @@ public class GMapFragment extends MapFragment implements AppConstants {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         setRetainInstance(true);
     }
 
@@ -251,16 +258,6 @@ public class GMapFragment extends MapFragment implements AppConstants {
         String tim = " Time: " + mLastUpdateTime;
 
         if (getActivity() instanceof MapActivity) {
-            ((MapActivity) getActivity()).geoOutTextViewLon.setText(lon);
-            ((MapActivity) getActivity()).geoOutTextViewLat.setText(lat);
-            ((MapActivity) getActivity()).geoOutTextViewTime.setText(tim);
-        }
-        if (getActivity() instanceof StageActivity) {
-            ((StageActivity) getActivity()).geoOutTextViewLon.setText(lon);
-            ((StageActivity) getActivity()).geoOutTextViewLat.setText(lat);
-            ((StageActivity) getActivity()).geoOutTextViewTime.setText(tim);
-        }
-        if (getActivity() instanceof MapActivity) {
             if (!mFirstCameraMove) {
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), FIRST_SHOW_ZOOM_LEVEL));
                 mFirstCameraMove = true;
@@ -286,18 +283,6 @@ public class GMapFragment extends MapFragment implements AppConstants {
 
         showMapControls();
 
-        if (getActivity() instanceof StageActivity) {
-            if (settings.getBoolean("pref_key_info_geo", false)) {
-                ((StageActivity) getActivity()).geoOutTextViewLon.setVisibility(View.VISIBLE);
-                ((StageActivity) getActivity()).geoOutTextViewLat.setVisibility(View.VISIBLE);
-                ((StageActivity) getActivity()).geoOutTextViewTime.setVisibility(View.VISIBLE);
-//                ((TextView)getActivity().findViewById(R.id.km_togo_id)).setVisibility(View.VISIBLE);
-            } else {
-                ((StageActivity) getActivity()).geoOutTextViewLon.setVisibility(View.GONE);
-                ((StageActivity) getActivity()).geoOutTextViewLat.setVisibility(View.GONE);
-                ((StageActivity) getActivity()).geoOutTextViewTime.setVisibility(View.GONE);
-            }
-        }
         if (getActivity() instanceof MapActivity) {
             showMapControls();
         }
@@ -332,11 +317,7 @@ public class GMapFragment extends MapFragment implements AppConstants {
         hideMapControls();
 
         if (getActivity() instanceof StageActivity) {
-            ((StageActivity) getActivity()).geoOutTextViewLon.setVisibility(View.GONE);
-            ((StageActivity) getActivity()).geoOutTextViewLat.setVisibility(View.GONE);
-            ((StageActivity) getActivity()).geoOutTextViewTime.setVisibility(View.GONE);
             mKmTogo.setVisibility(View.GONE);
-
         }
 
         final SharedPreferences.Editor edit = mPrefs.edit();
@@ -635,5 +616,47 @@ public class GMapFragment extends MapFragment implements AppConstants {
     }
     private void hideLoadingBanner(){
         (getActivity().findViewById(R.id.progress_drawing_id)).setVisibility(View.GONE);
+    }
+
+
+    private void infoDialog() {
+        String message = "";
+        if (mCurrentLocation!=null) {
+                message = "Your current location:\n\n" +
+                        "Latitude: " + mCurrentLocation.getLatitude() + "\n" +
+                        "Longitude: " + mCurrentLocation.getLongitude() + "\n\n" +
+                        "Last update: " + DateFormat.getTimeInstance().format(new Date(mCurrentLocation.getTime()));
+        } else {
+            message = "Your current location:\n\nNo data available :(";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Info");
+        builder.setMessage(message);
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        Dialog alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_map, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.info_my_location) {
+            infoDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

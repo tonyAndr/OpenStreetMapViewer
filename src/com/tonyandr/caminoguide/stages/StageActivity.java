@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import com.tonyandr.caminoguide.NavigationDrawerLayout;
 import com.tonyandr.caminoguide.R;
@@ -23,9 +22,6 @@ public class StageActivity extends ActionBarActivity implements FragmentManager.
     FragmentManager fragmentManager;
     private Toolbar toolbar;
     private NavigationDrawerLayout drawerFragment;
-    public TextView geoOutTextViewLon;
-    public TextView geoOutTextViewLat;
-    public TextView geoOutTextViewTime;
     public int backstackCount;
     public Location transferMyLocation;
 
@@ -44,10 +40,6 @@ public class StageActivity extends ActionBarActivity implements FragmentManager.
                             transaction.commit();
 //            fragmentList.setCommunicater(this);
         }
-
-        geoOutTextViewLon = (TextView) findViewById(R.id.debugGeoOutputLon);
-        geoOutTextViewLat = (TextView) findViewById(R.id.debugGeoOutputLat);
-        geoOutTextViewTime = (TextView) findViewById(R.id.debugGeoOutputTime);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
@@ -122,5 +114,6 @@ public class StageActivity extends ActionBarActivity implements FragmentManager.
         }
 
     }
+
 
 }

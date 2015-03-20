@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EasyCaminoOfflineNavigator.iml" filepath="$PROJECT_DIR$/EasyCaminoOfflineNavigator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CaminoGuideOffline.iml" filepath="$PROJECT_DIR$/CaminoGuideOffline.iml" />
     </modules>
   </component>
 </project>

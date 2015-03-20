@@ -14,9 +14,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -56,8 +60,8 @@ import java.util.Date;
 public class MapsForgeFragment extends Fragment implements AppConstants {
 
     // name of the map file in the external storage
-    private static final String MAPFILE = "/caminofrances.map";
-    private static final String RENDER = Environment.getExternalStorageDirectory().getPath() + "/MapsForgeTest/";
+    private static final String MAPFILE = APP_PATH+APP_OFFLINE_MAP_FILE;
+    private static final String RENDER = Environment.getExternalStorageDirectory().getPath() + APP_PATH;
 
     public Location mCurrentLocation;
     public Location mFinishLocation;
@@ -82,6 +86,9 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
     private DrawAlbMarkersTask drawAlbMarkersTask;
     private DrawCityMarkersTask drawCityMarkersTask;
 
+    private int mInterval = 10000; // 5 seconds by default, can be changed later
+    private Handler mHandler; // Update location to mCurrentLocation
+
     public static MapsForgeFragment newInstance() {
         MapsForgeFragment fragment = new MapsForgeFragment();
         return fragment;
@@ -90,6 +97,7 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -170,10 +178,7 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
     public void onStart() {
         super.onStart();
 
-        File f = new File(Environment.getExternalStorageDirectory().getPath() + APP_PATH + APP_OFFLINE_MAP_FILE);
-        if (!f.exists()) {
-            notMapFileDialog("Offline map not found");
-        }
+        mHandler = new Handler();
 
         mKmTogo = ((TextView)getActivity().findViewById(R.id.km_togo_id));
         mZoomIn = (ImageButton) getActivity().findViewById(R.id.zoomInBtn);
@@ -191,6 +196,7 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
                 }
             }
         });
+
 
         mZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,15 +266,13 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
             getActivity().findViewById(R.id.zoomInBtn).setVisibility(View.GONE);
             getActivity().findViewById(R.id.zoomOutBtn).setVisibility(View.GONE);
             getActivity().findViewById(R.id.getMyLocBtn).setVisibility(View.GONE);
-            ((StageActivity) getActivity()).geoOutTextViewLon.setVisibility(View.GONE);
-            ((StageActivity) getActivity()).geoOutTextViewLat.setVisibility(View.GONE);
-            ((StageActivity) getActivity()).geoOutTextViewTime.setVisibility(View.GONE);
             mKmTogo.setVisibility(View.GONE);
         }
         (getActivity().findViewById(R.id.progress_drawing_id)).setVisibility(View.GONE);
 
 
         finishAllProcesses();
+        stopRepeatingTask();
     }
 
     @Override
@@ -283,24 +287,13 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
             getActivity().findViewById(R.id.getMyLocBtn).setVisibility(View.VISIBLE);
         }
 
-        if (getActivity() instanceof StageActivity) {
-            if (settings.getBoolean("pref_key_info_geo", false)) {
-                ((StageActivity) getActivity()).geoOutTextViewLon.setVisibility(View.VISIBLE);
-                ((StageActivity) getActivity()).geoOutTextViewLat.setVisibility(View.VISIBLE);
-                ((StageActivity) getActivity()).geoOutTextViewTime.setVisibility(View.VISIBLE);
-            } else {
-                ((StageActivity) getActivity()).geoOutTextViewLon.setVisibility(View.GONE);
-                ((StageActivity) getActivity()).geoOutTextViewLat.setVisibility(View.GONE);
-                ((StageActivity) getActivity()).geoOutTextViewTime.setVisibility(View.GONE);
-            }
-        }
-
-
         try {
             drawLogic();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        startRepeatingTask();
     }
 
     @Override
@@ -610,4 +603,67 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
         }
     }
 
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            if (myLocationOverlay != null) {
+                final SharedPreferences.Editor edit = mPrefs.edit();
+                mCurrentLocation = myLocationOverlay.getLastLocation();
+                if (mCurrentLocation != null) {
+                    edit.putString("location-string", mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude() + "," + mCurrentLocation.getTime());
+                }
+                edit.apply();
+            }
+            mHandler.postDelayed(mStatusChecker, mInterval);
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
+    private void infoDialog() {
+        String message = "";
+        if (mCurrentLocation!=null) {
+            message = "Your current location:\n\n" +
+                    "Latitude: " + mCurrentLocation.getLatitude() + "\n" +
+                    "Longitude: " + mCurrentLocation.getLongitude() + "\n\n" +
+                    "Last update: " + DateFormat.getTimeInstance().format(new Date(mCurrentLocation.getTime()));
+        } else {
+            message = "Your current location:\n\nNo data available :(";
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Info");
+        builder.setMessage(message);
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        Dialog alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_map, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.info_my_location) {
+            infoDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

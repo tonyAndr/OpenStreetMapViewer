@@ -51,16 +51,6 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/iv_dload_map"
-        android:src="@drawable/download_stage_view"
-        android:layout_alignTop="@+id/iv_globe"
-        android:layout_toLeftOf="@+id/iv_globe"
-        android:layout_marginRight="8dp"
-        android:layout_toStartOf="@+id/iv_globe"
-        android:background="#00bfdd93" />
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/iv_globe"
         android:src="@drawable/globe_in_stage_view"
         android:layout_alignTop="@+id/tv_kmdone_text"

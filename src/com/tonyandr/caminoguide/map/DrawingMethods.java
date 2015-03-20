@@ -828,18 +828,15 @@ public class DrawingMethods implements AppConstants {
     }
 
     public ArrayList<org.mapsforge.map.layer.overlay.Polyline> drawAllRouteMF(int stage) throws JSONException {
-        Paint paintStrokeAlt = Utils.createPaint(AndroidGraphicFactory.INSTANCE
-                        .createColor(org.mapsforge.core.graphics.Color.BLACK), 1,
+        Paint paintStrokeAlt = Utils.createPaint(Color.rgb(255, 255, 0), 1,
                 Style.STROKE);
-        paintStrokeAlt.setDashPathEffect(new float[] { 15, 10 });
+        paintStrokeAlt.setDashPathEffect(new float[] { 8, 8 });
         paintStrokeAlt.setStrokeWidth(4);
 
-        Paint paintStroke = Utils.createPaint(AndroidGraphicFactory.INSTANCE
-                        .createColor(org.mapsforge.core.graphics.Color.GREEN), 1,
+        Paint paintStroke = Utils.createPaint(Color.rgb(0, 150, 136), 1,
                 Style.STROKE);
         paintStroke.setStrokeWidth(5);
-        Paint paintStrokeHigh = Utils.createPaint(AndroidGraphicFactory.INSTANCE
-                        .createColor(org.mapsforge.core.graphics.Color.RED), 1,
+        Paint paintStrokeHigh = Utils.createPaint(Color.rgb(244,68,68), 1,
                 Style.STROKE);
         paintStrokeHigh.setStrokeWidth(5);
 
@@ -924,8 +921,7 @@ public class DrawingMethods implements AppConstants {
 
 
     public double drawDistanceRouteMF(Layers layers, Location current, Location finish) throws JSONException {
-        Paint paintStroke = Utils.createPaint(AndroidGraphicFactory.INSTANCE
-                        .createColor(org.mapsforge.core.graphics.Color.RED), 1,
+        Paint paintStroke = Utils.createPaint(Color.rgb(244,68,68), 1,
                 Style.STROKE);
         paintStroke.setStrokeWidth(5);
 

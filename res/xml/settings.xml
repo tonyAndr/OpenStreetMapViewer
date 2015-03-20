@@ -12,11 +12,6 @@
     android:summary="Re-drawing route and calculate distance when location will change"
     android:title="Realtime route calculation" />
 
-    <CheckBoxPreference
-    android:defaultValue="false"
-    android:key="pref_key_info_geo"
-    android:summary="@string/pref_summary_info_geo"
-    android:title="@string/pref_title_info_geo" />
     <PreferenceCategory
         android:title="Manage maps">
         <ListPreference android:key="pref_key_choose_map"
@@ -30,8 +25,8 @@
             <!--android:key="pref_key_offline_mode"-->
             <!--android:summary="@string/pref_summary_offline_mode"-->
             <!--android:title="@string/pref_title_offline_mode" />-->
-        <Preference
-            android:key="dl_key"
-            android:title="@string/pref_key_download_title" />
+        <!--<Preference-->
+            <!--android:key="dl_key"-->
+            <!--android:title="@string/pref_key_download_title" />-->
         </PreferenceCategory>
 </PreferenceScreen>

@@ -4,25 +4,43 @@ package com.tonyandr.caminoguide.map;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tonyandr.caminoguide.NavigationDrawerLayout;
 import com.tonyandr.caminoguide.R;
+import com.tonyandr.caminoguide.constants.AppConstants;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 /**
@@ -30,17 +48,13 @@ import com.tonyandr.caminoguide.R;
  *
  * @author Manuel Stahl
  */
-public class MapActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MapActivity extends ActionBarActivity implements AppConstants,SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String OSM_FRAGMENT_TAG = "com.tonyandr.caminoguide.osm_tag";
-    private static final String MF_FRAGMENT_TAG = "com.tonyandr.caminoguide.mf_tag";
-    private static final String GMS_FRAGMENT_TAG = "com.tonyandr.caminoguide.gms_tag";
-    public TextView geoOutTextViewLon;
-    public TextView geoOutTextViewLat;
-    public TextView geoOutTextViewTime;
+    private SharedPreferences mPrefs;
     SharedPreferences settings;
     private Boolean doubleBackToExitPressedOnce = false;
     private FragmentManager fm;
+    private String mFullAppPath = Environment.getExternalStorageDirectory().getPath() + APP_PATH;
 
     private Toolbar toolbar;
 
@@ -57,6 +71,7 @@ public class MapActivity extends ActionBarActivity implements SharedPreferences.
         settings = PreferenceManager.getDefaultSharedPreferences(this);//get the preferences that are allowed to be given
         //set the listener to listen for changes in the preferences
         settings.registerOnSharedPreferenceChangeListener(this);
+        mPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         this.setContentView(R.layout.activity_map);
 
         toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -66,9 +81,6 @@ public class MapActivity extends ActionBarActivity implements SharedPreferences.
         NavigationDrawerLayout drawerFragment = (NavigationDrawerLayout) getSupportFragmentManager().findFragmentById(R.id.fragment_nav_drawer);
         drawerFragment.setUp(R.id.fragment_nav_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
-        geoOutTextViewLon = (TextView) findViewById(R.id.debugGeoOutputLon);
-        geoOutTextViewLat = (TextView) findViewById(R.id.debugGeoOutputLat);
-        geoOutTextViewTime = (TextView) findViewById(R.id.debugGeoOutputTime);
         fm = this.getFragmentManager();
 
 
@@ -120,56 +132,86 @@ public class MapActivity extends ActionBarActivity implements SharedPreferences.
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_map, menu);
-
-        return true;
+    private void infoDialog() {
+        String message = "";
+        if (mPrefs.contains("location-string")) {
+            String[] loc_string = mPrefs.getString("location-string", "").split(",");
+            if (loc_string.length > 1) {
+                message = "Your current location:\n\n" +
+                        "Latitude: " + Double.parseDouble(loc_string[0]) + "\n" +
+                        "Longitude: " + Double.parseDouble(loc_string[1]) + "\n\n" +
+                        "Last update: " + DateFormat.getTimeInstance().format(new Date(Long.parseLong(loc_string[2])));
+            }
+        } else {
+            message = "Your current location:\n\nNo data available :(";
+        }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Info");
+            builder.setMessage(message);
+            builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            Dialog alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_map, menu);
+//
+//        return true;
+//    }
 
-        return super.onOptionsItemSelected(item);
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.info_my_location) {
+//            infoDialog();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+
+
+    private void startMapsForgeFragment() {
+        if (fm.findFragmentByTag(MF_FRAGMENT_TAG) == null) {
+            if (fm.findFragmentByTag(GMS_FRAGMENT_TAG) != null) {
+                fm.beginTransaction().remove(fm.findFragmentByTag(GMS_FRAGMENT_TAG)).commit();
+            }
+            MapsForgeFragment mapFragment = MapsForgeFragment.newInstance();
+            fm.beginTransaction().replace(R.id.map_container, mapFragment, MF_FRAGMENT_TAG).commit();
+        }
+    }
+    private void startGoogleMapsFragment() {
+        if (fm.findFragmentByTag(GMS_FRAGMENT_TAG) == null) {
+            if (fm.findFragmentByTag(MF_FRAGMENT_TAG) != null) {
+                fm.beginTransaction().remove(fm.findFragmentByTag(MF_FRAGMENT_TAG)).commit();
+            }
+            GMapFragment mapFragment = GMapFragment.newInstance();
+            fm.beginTransaction().replace(R.id.map_container, mapFragment, GMS_FRAGMENT_TAG).commit();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         fm = this.getFragmentManager();
-        switch (Integer.parseInt(settings.getString("pref_key_choose_map", "1"))) {
-            case 1:
-                if (fm.findFragmentByTag(GMS_FRAGMENT_TAG) == null) {
-                    GMapFragment mapFragment = GMapFragment.newInstance();
-                    fm.beginTransaction().add(R.id.map_container, mapFragment, GMS_FRAGMENT_TAG).commit();
-                }
-                break;
-            case 2:
-                if (fm.findFragmentByTag(MF_FRAGMENT_TAG) == null) {
-                    MapsForgeFragment mapFragment = MapsForgeFragment.newInstance();
-                    fm.beginTransaction().add(R.id.map_container, mapFragment, MF_FRAGMENT_TAG).commit();
-                }
-                break;
-            case 3:
-                if (fm.findFragmentByTag(OSM_FRAGMENT_TAG) == null) {
-                    OSMFragment mapFragment = OSMFragment.newInstance();
-                    fm.beginTransaction().add(R.id.map_container, mapFragment, OSM_FRAGMENT_TAG).commit();
-                }
-                break;
-            default:
+        File map_file = new File(mFullAppPath + APP_OFFLINE_MAP_FILE);
 
-                break;
-        }
-        if (settings.getBoolean("pref_key_info_geo", false)) {
-            geoOutTextViewLon.setVisibility(View.VISIBLE);
-            geoOutTextViewLat.setVisibility(View.VISIBLE);
-            geoOutTextViewTime.setVisibility(View.VISIBLE);
+        if (settings.getString("pref_key_choose_map", "1").equals(MF_FRAGMENT_TAG)) {
+            if (!map_file.exists()) {
+                new CopyAssetsTask().execute();
+            } else {
+                startMapsForgeFragment();
+            }
         } else {
-            geoOutTextViewLon.setVisibility(View.GONE);
-            geoOutTextViewLat.setVisibility(View.GONE);
-            geoOutTextViewTime.setVisibility(View.GONE);
+            startGoogleMapsFragment();
         }
     }
 
@@ -207,5 +249,148 @@ public class MapActivity extends ActionBarActivity implements SharedPreferences.
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+
+    private boolean copyAssets() {
+        boolean success = true;
+        AssetManager assetManager = getAssets();
+        String[] files = null;
+        String output = Environment.getExternalStorageDirectory().getPath() + APP_PATH;
+        String folder = "CaminoGuideOffline";
+        try {
+            files = assetManager.list(folder);
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+            success = false;
+        }
+        File outDir = new File(output);
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+        for(String filename : files) {
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = assetManager.open(folder +"/" +filename);
+                File outFile = new File(output, filename);
+                out = new FileOutputStream(outFile);
+                copyFile(in, out);
+            } catch(IOException e) {
+                Log.e("tag", "Failed to copy asset file: " + filename, e);
+                success = false;
+            }
+            finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+            }
+        }
+        return success;
+    }
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
+    }
+
+    public static void unzip(File zipFile, File targetDirectory) throws IOException {
+        ZipInputStream zis = new ZipInputStream(
+                new BufferedInputStream(new FileInputStream(zipFile)));
+        try {
+            ZipEntry ze;
+            int count;
+            byte[] buffer = new byte[8192];
+            while ((ze = zis.getNextEntry()) != null) {
+                File file = new File(targetDirectory, ze.getName());
+                File dir = ze.isDirectory() ? file : file.getParentFile();
+                if (!dir.isDirectory() && !dir.mkdirs())
+                    throw new FileNotFoundException("Failed to ensure directory: " +
+                            dir.getAbsolutePath());
+                if (ze.isDirectory())
+                    continue;
+                FileOutputStream fout = new FileOutputStream(file);
+                try {
+                    while ((count = zis.read(buffer)) != -1)
+                        fout.write(buffer, 0, count);
+                } finally {
+                    fout.close();
+                }
+            /* if time should be restored as well
+            long time = ze.getTime();
+            if (time > 0)
+                file.setLastModified(time);
+            */
+            }
+        } finally {
+            zis.close();
+        }
+    }
+
+
+    class CopyAssetsTask extends AsyncTask<Void, Void, Void> {
+
+        public  CopyAssetsTask() {
+
+        }
+        private boolean failed = false;
+
+        @Override
+        protected void onPreExecute() {
+            Toast.makeText(MapActivity.this, "Preparing map, please wait...", Toast.LENGTH_LONG).show();
+            showLoadingBanner();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            if (copyAssets()) {
+                File zip = new File(mFullAppPath + "CaminoGuideOffline.zip");
+                try {
+                    unzip(zip,new File(mFullAppPath));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    failed = true;
+                }
+                if (zip.exists()) {
+                    zip.delete();
+                }
+            } else {
+                failed = true;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            hideLoadingBanner();
+            if (!failed) {
+                startMapsForgeFragment();
+            } else {
+                startGoogleMapsFragment();
+                Toast.makeText(MapActivity.this,"Error while unzipping map file!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void showLoadingBanner() {
+        ((TextView) ((ViewGroup)findViewById(R.id.progress_drawing_id)).findViewById(R.id.progress_drawing_text)).setText("Preparing map, please wait...");
+        (findViewById(R.id.progress_drawing_id)).setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingBanner() {
+        (findViewById(R.id.progress_drawing_id)).setVisibility(View.GONE);
     }
 }
