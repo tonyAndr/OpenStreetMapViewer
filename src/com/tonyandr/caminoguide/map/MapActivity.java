@@ -181,18 +181,18 @@ public class MapActivity extends ActionBarActivity implements AppConstants,Share
 
     private void startMapsForgeFragment() {
         if (fm.findFragmentByTag(MF_FRAGMENT_TAG) == null) {
-            if (fm.findFragmentByTag(GMS_FRAGMENT_TAG) != null) {
-                fm.beginTransaction().remove(fm.findFragmentByTag(GMS_FRAGMENT_TAG)).commit();
-            }
+//            if (fm.findFragmentByTag(GMS_FRAGMENT_TAG) != null) {
+//                fm.beginTransaction().remove(fm.findFragmentByTag(GMS_FRAGMENT_TAG)).commit();
+//            }
             MapsForgeFragment mapFragment = MapsForgeFragment.newInstance();
             fm.beginTransaction().replace(R.id.map_container, mapFragment, MF_FRAGMENT_TAG).commit();
         }
     }
     private void startGoogleMapsFragment() {
         if (fm.findFragmentByTag(GMS_FRAGMENT_TAG) == null) {
-            if (fm.findFragmentByTag(MF_FRAGMENT_TAG) != null) {
-                fm.beginTransaction().remove(fm.findFragmentByTag(MF_FRAGMENT_TAG)).commit();
-            }
+//            if (fm.findFragmentByTag(MF_FRAGMENT_TAG) != null) {
+//                fm.beginTransaction().remove(fm.findFragmentByTag(MF_FRAGMENT_TAG)).commit();
+//            }
             GMapFragment mapFragment = GMapFragment.newInstance();
             fm.beginTransaction().replace(R.id.map_container, mapFragment, GMS_FRAGMENT_TAG).commit();
         }

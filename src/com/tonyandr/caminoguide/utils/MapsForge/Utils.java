@@ -12,13 +12,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.widget.Toast;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.Marker;
 
@@ -40,6 +38,8 @@ public final class Utils {
             a.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    private static Bitmap bubble;
 
     /**
      * Compatibility method.
@@ -74,27 +74,10 @@ public final class Utils {
         return paint;
     }
 
-    public static Marker createTappableMarker(final Context c, int resourceIdentifier,
-                                       LatLong latLong) {
-        Drawable drawable = c.getResources().getDrawable(resourceIdentifier);
-        Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
-        bitmap.incrementRefCount();
-        return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
-            @Override
-            public boolean onTap(LatLong geoPoint, Point viewPosition,
-                                 Point tapPoint) {
-                if (contains(viewPosition, tapPoint)) {
-                    Toast.makeText(c,
-                            "The Marker was tapped " + geoPoint.toString(),
-                            Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                return false;
-            }
-        };
-    }
 
-    static Bitmap viewToBitmap(Context c, View view) {
+
+
+    public static Bitmap viewToBitmap(Context c, View view) {
         view.measure(MeasureSpec.getSize(view.getMeasuredWidth()),
                 MeasureSpec.getSize(view.getMeasuredHeight()));
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());

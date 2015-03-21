@@ -1942,19 +1942,20 @@ containing a value of this type.
         public static final int list_circle=0x7f02006f;
         public static final int list_triangle=0x7f020070;
         public static final int list_triangle_white=0x7f020071;
-        public static final int navdrawer=0x7f020072;
-        public static final int navdrawer_=0x7f020073;
-        public static final int person=0x7f020074;
-        public static final int powered_by_google_dark=0x7f020075;
-        public static final int powered_by_google_light=0x7f020076;
-        public static final int right_arrow=0x7f020077;
-        public static final int shape_rounded=0x7f020078;
-        public static final int splash_text=0x7f020079;
-        public static final int success=0x7f02007a;
-        public static final int tab_bg=0x7f02007b;
-        public static final int to_albergue_stage_view=0x7f02007c;
-        public static final int zoom_in=0x7f02007d;
-        public static final int zoom_out=0x7f02007e;
+        public static final int mf_bubble_bg=0x7f020072;
+        public static final int navdrawer=0x7f020073;
+        public static final int navdrawer_=0x7f020074;
+        public static final int person=0x7f020075;
+        public static final int powered_by_google_dark=0x7f020076;
+        public static final int powered_by_google_light=0x7f020077;
+        public static final int right_arrow=0x7f020078;
+        public static final int shape_rounded=0x7f020079;
+        public static final int splash_text=0x7f02007a;
+        public static final int success=0x7f02007b;
+        public static final int tab_bg=0x7f02007c;
+        public static final int to_albergue_stage_view=0x7f02007d;
+        public static final int zoom_in=0x7f02007e;
+        public static final int zoom_out=0x7f02007f;
     }
     public static final class id {
         public static final int action_bar=0x7f0c004e;

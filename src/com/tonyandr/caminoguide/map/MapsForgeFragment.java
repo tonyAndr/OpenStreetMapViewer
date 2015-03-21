@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -21,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import com.tonyandr.caminoguide.R;
 import com.tonyandr.caminoguide.constants.AppConstants;
-import com.tonyandr.caminoguide.settings.SettingsActivity;
 import com.tonyandr.caminoguide.stages.StageActivity;
 
 import org.json.JSONException;
@@ -74,6 +73,7 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
     private TextView mKmTogo;
     private ImageButton mZoomIn;
     private ImageButton mZoomOut;
+    private ImageButton followMyLocation;
 
     private MapView mapView;
     private TileCache tileCache;
@@ -105,7 +105,6 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
 
         mPrefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        drawingMethods = new DrawingMethods(getActivity());
         if (mPrefs.contains("location-string")) {
             String[] loc_string = mPrefs.getString("location-string", "").split(",");
             if (loc_string.length > 1) {
@@ -151,39 +150,18 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
 
     }
 
-    private void notMapFileDialog(String header) {
-        // Build the alert dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(header);
-        builder.setMessage("Go to Settings and download it?");
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // Show location settings when the user acknowledges the alert dialog
-                Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                startActivity(intent);
-            }
-        });
-        Dialog alertDialog = builder.create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.show();
-    }
 
     @Override
     public void onStart() {
         super.onStart();
 
         mHandler = new Handler();
+        drawingMethods = new DrawingMethods(mapView,getActivity());
 
         mKmTogo = ((TextView)getActivity().findViewById(R.id.km_togo_id));
         mZoomIn = (ImageButton) getActivity().findViewById(R.id.zoomInBtn);
         mZoomOut = (ImageButton) getActivity().findViewById(R.id.zoomOutBtn);
-        ImageButton followMyLocation = (ImageButton) getActivity().findViewById(R.id.getMyLocBtn);
+        followMyLocation = (ImageButton) getActivity().findViewById(R.id.getMyLocBtn);
         followMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,6 +175,7 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
             }
         });
 
+        setControlsAnimation();
 
         mZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,8 +219,66 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
         // only once a layer is associated with a mapView the rendering starts
         this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
         this.mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
+
 //        AddRoadAxis(mapView.getLayerManager().getLayers());
         setHardwareAccelerationOff();
+    }
+
+    private void setControlsAnimation() {
+        final float originX = mZoomIn.getScaleX();
+        final float originY = mZoomIn.getScaleY();
+        final float originXLoc = followMyLocation.getScaleX();
+        final float originYLoc = followMyLocation.getScaleY();
+
+        mZoomIn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(originX*1.2f).scaleY(originY * 1.2f).setDuration(100);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().scaleX(originX).scaleY(originY).setDuration(100);
+                        break;
+                    default:break;
+
+                }
+                return false;
+            }
+        });
+        mZoomOut.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(originX * 1.2f).scaleY(originY * 1.2f).setDuration(100);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().scaleX(originX).scaleY(originY).setDuration(100);
+                        break;
+                    default:break;
+
+                }
+                return false;
+            }
+        });
+        followMyLocation.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(originXLoc * 1.2f).scaleY(originYLoc * 1.2f).setDuration(100);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().scaleX(originXLoc).scaleY(originYLoc).setDuration(100);
+                        break;
+                    default:break;
+
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -309,49 +346,6 @@ public class MapsForgeFragment extends Fragment implements AppConstants {
         File file = new File(Environment.getExternalStorageDirectory().getPath() + filename);
         return file;
     }
-
-    private double randomWithRange(double min, double max) {
-        double range = Math.abs(max - min);
-        return (Math.random() * range) + (min <= max ? min : max);
-    }
-
-//    public void AddRoadAxis(Layers layers) {
-//        float[] dash = {4, 2};
-////        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
-////        paint.setColor(Color.RED);
-////        paint.setStyle(Style.STROKE);
-////        paint.setStrokeWidth(8); // this was missing!
-////        paint.setDashPathEffect(dash);
-//
-//
-//        Paint paintStroke = Utils.createPaint(AndroidGraphicFactory.INSTANCE
-//                        .createColor(org.mapsforge.core.graphics.Color.GREEN), 1,
-//                Style.STROKE);
-//        paintStroke.setDashPathEffect(new float[]{25, 15});
-//        paintStroke.setStrokeWidth(5);
-//        paintStroke.setStrokeWidth(3);
-//        Polyline line = new Polyline(paintStroke,
-//                AndroidGraphicFactory.INSTANCE);
-//
-//
-////        Polyline line = new Polyline(paint, AndroidGraphicFactory.INSTANCE);
-//
-//        List<LatLong> latLongs = line.getLatLongs();
-//
-//        for (int i = 0; i <= 20; i++) {
-//
-////            Polyline polyline = new Polyline(Utils.createPaint(
-////                    AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE), 10,
-////                    Style.STROKE), AndroidGraphicFactory.INSTANCE);
-//
-//            LatLong latLong = new LatLong(randomWithRange(22.4, 52.6), randomWithRange(-13.3, 13.5));
-//            Marker A01 = Utils.createTappableMarker(getActivity(), R.drawable.ic_albergue_marker_green, latLong);
-//            latLongs.add(latLong);
-//
-//            layers.add(A01);
-//        }
-//        layers.add(line);
-//    }
 
 
     private void drawLogic() throws JSONException {

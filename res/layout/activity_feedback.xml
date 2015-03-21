@@ -55,7 +55,6 @@
             android:layout_margin="5dp"
             android:layout_alignParentBottom="true"
             ripple:rv_color="#444444"
-            ripple:rv_zoom="true"
             ripple:rv_centered="false">
 
             <Button

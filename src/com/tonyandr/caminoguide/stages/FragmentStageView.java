@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -201,6 +202,25 @@ if (settings.getString("pref_key_choose_map", "1") == GMS_FRAGMENT_TAG) {
                         transaction.commit();
                     }
                 }
+            }
+        });
+
+        final float originX = btnGlobe.getScaleX();
+        final float originY = btnGlobe.getScaleY();
+        btnGlobe.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(originX*1.2f).scaleY(originY*1.2f).setDuration(100);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().scaleX(originX).scaleY(originY).setDuration(100);
+                        break;
+                    default:break;
+
+                }
+                return false;
             }
         });
 

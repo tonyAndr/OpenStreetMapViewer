@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -72,6 +73,10 @@ public class GMapFragment extends MapFragment implements AppConstants {
     SharedPreferences settings;
     private Boolean mDrawMarkers; // to not draw when recieved broadcast
     private Polyline line;
+
+    private ImageButton mZoomIn;
+    private ImageButton mZoomOut;
+    private ImageButton followMyLocation;
 
     private TextView mKmTogo;
 
@@ -134,22 +139,22 @@ public class GMapFragment extends MapFragment implements AppConstants {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(43.1, -2.9), MIN_ZOOM_LEVEL);
         map.animateCamera(cameraUpdate);
 
-        ImageButton followMyLocation = (ImageButton) getActivity().findViewById(R.id.getMyLocBtn);
-        ImageButton zoomInBtn = (ImageButton) getActivity().findViewById(R.id.zoomInBtn);
-        ImageButton zoomOutBtn = (ImageButton) getActivity().findViewById(R.id.zoomOutBtn);
-        zoomInBtn.setOnClickListener(new View.OnClickListener() {
+         followMyLocation = (ImageButton) getActivity().findViewById(R.id.getMyLocBtn);
+         mZoomIn = (ImageButton) getActivity().findViewById(R.id.zoomInBtn);
+         mZoomOut = (ImageButton) getActivity().findViewById(R.id.zoomOutBtn);
+        mZoomIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 map.animateCamera(CameraUpdateFactory.zoomIn());
             }
         });
-        zoomOutBtn.setOnClickListener(new View.OnClickListener() {
+        mZoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 map.animateCamera(CameraUpdateFactory.zoomOut());
             }
         });
-
+        setControlsAnimation();
 
         br = new BroadcastReceiver() {
             @Override
@@ -202,15 +207,6 @@ public class GMapFragment extends MapFragment implements AppConstants {
         followMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (!mFollowUserLocation) {
-//                    mFollowUserLocation = true;
-//                    Toast toast = Toast.makeText(getActivity(), "GPS Tracking On", Toast.LENGTH_SHORT);
-//                    toast.show();
-//                } else {
-//                    mFollowUserLocation = false;
-//                    Toast toast = Toast.makeText(getActivity(), "GPS Tracking Off", Toast.LENGTH_SHORT);
-//                    toast.show();
-//                }
                 if (mCurrentLocation != null) {
                     LatLng point = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                     CameraUpdate cameraUpdate;
@@ -658,5 +654,62 @@ public class GMapFragment extends MapFragment implements AppConstants {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setControlsAnimation() {
+        final float originX = mZoomIn.getScaleX();
+        final float originY = mZoomIn.getScaleY();
+        final float originXLoc = followMyLocation.getScaleX();
+        final float originYLoc = followMyLocation.getScaleY();
+
+        mZoomIn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(originX*1.2f).scaleY(originY*1.2f).setDuration(100);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().scaleX(originX).scaleY(originY).setDuration(100);
+                        break;
+                    default:break;
+
+                }
+                return false;
+            }
+        });
+        mZoomOut.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(originX*1.2f).scaleY(originY*1.2f).setDuration(100);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().scaleX(originX).scaleY(originY).setDuration(100);
+                        break;
+                    default:break;
+
+                }
+                return false;
+            }
+        });
+        followMyLocation.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(originXLoc*1.2f).scaleY(originYLoc*1.2f).setDuration(100);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        v.animate().scaleX(originXLoc).scaleY(originYLoc).setDuration(100);
+                        break;
+                    default:break;
+
+                }
+                return false;
+            }
+        });
     }
 }

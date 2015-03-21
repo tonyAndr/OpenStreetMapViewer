@@ -2,7 +2,9 @@ package com.tonyandr.caminoguide.map;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -19,17 +21,15 @@ import com.tonyandr.caminoguide.utils.OnStageLocationData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layers;
-import org.osmdroid.bonuspack.overlays.FolderOverlay;
-import org.osmdroid.bonuspack.overlays.Marker;
-import org.osmdroid.bonuspack.overlays.Polyline;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Overlay;
+import org.mapsforge.map.layer.overlay.Marker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +60,28 @@ public class DrawingMethods implements AppConstants {
         jfh = new JsonFilesHandler(context);
         dbController = DBControllerAdapter.getInstance(context);
         geoMethods = new GeoMethods(context);
+    }
+
+    public Marker createTappableMarker(final Context c, final String title, int resourceIdentifier,
+                                              final LatLong latLong) {
+        Drawable drawable = c.getResources().getDrawable(resourceIdentifier);
+        final Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
+        bitmap.incrementRefCount();
+
+        return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
+            @Override
+            public boolean onTap(LatLong geoPoint, Point viewPosition,
+                                 Point tapPoint) {
+                if (contains(viewPosition, tapPoint)) {
+                    Toast.makeText(c,
+                            title,
+                            Toast.LENGTH_SHORT).show();
+                    mapView.getModel().mapViewPosition.animateTo(latLong);
+                    return true;
+                }
+                return false;
+            }
+        };
     }
 
     // *** Get array of geopoints to osm and gmap
@@ -397,221 +419,7 @@ public class DrawingMethods implements AppConstants {
         }
     }
 
-    // *** OSM Functions ***
 
-    private Marker drawAlbMarker(Double lat, Double lng, String title, String desc, String snippet, boolean highlighted) {
-        GeoPoint mGeoP = new GeoPoint(lat, lng);
-        // build a new marker pin
-        Marker mPin = new Marker(mapView);
-        mPin.setPosition(mGeoP);
-        mPin.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        if (highlighted) {
-            mPin.setIcon(context.getResources().getDrawable(R.drawable.ic_albergue_marker_red));
-        } else {
-            mPin.setIcon(context.getResources().getDrawable(R.drawable.ic_albergue_marker_green));
-        }
-        mPin.setTitle("Albergue " + title);
-        mPin.setSubDescription(desc);
-        mPin.setSnippet(snippet);
-
-        // add new marker pin to map
-        return mPin;
-    }
-
-    private Marker drawCityMarker(Double lat, Double lng, String title) {
-
-        GeoPoint mGeoP = new GeoPoint(lat, lng);
-
-        // build a new marker pin
-        Marker mPin = new Marker(mapView);
-        mPin.setPosition(mGeoP);
-        mPin.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        mPin.setIcon(context.getResources().getDrawable(R.drawable.ic_locality_marker));
-        mPin.setTitle(title);
-//        mPin.setSubDescription(desc);
-//        mPin.setSnippet(snippet);
-
-        // add new marker pin to map
-        return mPin;
-    }
-
-    public double drawDistanceRoute(Location current, Location finish) throws JSONException {
-        ArrayList<GeoPoint> waypoints = new ArrayList<>();
-        JSONArray geoArr = getRouteArray(current, finish);
-        Polyline routeOverlay = new Polyline(context);
-        JSONObject geopoint;
-        JSONObject prev_geopoint = new JSONObject();
-        double distFromCurrToFin = 0;
-        if (currentData != null) {
-//            if (areaLimitSpain.contains(new GeoPoint(current.getLatitude(), current.getLongitude())))
-            waypoints.add(new GeoPoint(current.getLatitude(), current.getLongitude()));
-        }
-        if (geoArr.length() > 0) {
-            for (int h = 0; h < geoArr.length(); h++) {
-                geopoint = geoArr.getJSONObject(h);
-                if (h == 0) {
-                    if (current != null)
-                        distFromCurrToFin = distFromCurrToFin + geoMethods.distance(new LatLng(geopoint.getDouble("lat"), geopoint.getDouble("lng")), new LatLng(current.getLatitude(), current.getLongitude()));
-                    waypoints.add(new GeoPoint(geopoint.getDouble("lat"), geopoint.getDouble("lng")));
-                } else {
-                    distFromCurrToFin = distFromCurrToFin + geoMethods.distance(
-                            new LatLng(prev_geopoint.getDouble("lat"), prev_geopoint.getDouble("lng")),
-                            new LatLng(geopoint.getDouble("lat"), geopoint.getDouble("lng")));
-                    waypoints.add(new GeoPoint(geopoint.getDouble("lat"), geopoint.getDouble("lng")));
-                }
-                prev_geopoint = geopoint;
-            }
-            distFromCurrToFin = distFromCurrToFin + geoMethods.distance(new LatLng(prev_geopoint.getDouble("lat"), prev_geopoint.getDouble("lng")), new LatLng(finish.getLatitude(), finish.getLongitude()));
-        }
-        if (currentData != null) {
-            waypoints.add(new GeoPoint(finish.getLatitude(), finish.getLongitude()));
-        }
-        routeOverlay.setColor(Color.argb(230, 244, 68, 68));
-        routeOverlay.setWidth(6.0f);
-        routeOverlay.setPoints(waypoints);
-        List<Overlay> x = mapView.getOverlays();
-        int i = 0;
-        for (Overlay item : x) {
-            if (item instanceof Polyline) {
-                mapView.getOverlayManager().remove(i);
-            }
-            i++;
-        }
-
-        mapView.getOverlays().add(routeOverlay);
-
-        return distFromCurrToFin;
-    }
-
-    public void drawAllRoute(int stage) throws JSONException {
-        JSONObject fileObj, geo;
-        JSONArray geoArr;
-        ArrayList<GeoPoint> waypointsStart = new ArrayList<>();
-        ArrayList<GeoPoint> waypointsHighlight = new ArrayList<>();
-        ArrayList<GeoPoint> waypointsFinish = new ArrayList<>();
-        ArrayList<GeoPoint> waypointsAlt = new ArrayList<>();
-
-        GeoPoint newPoint;
-        Polyline routeOverlayStart = new Polyline(context);
-        Polyline routeOverlayHighlight = new Polyline(context);
-        Polyline routeOverlayFinish = new Polyline(context);
-
-
-        boolean finish = false;
-        for (int i = 1; i < 32; i++) {
-            fileObj = jfh.parseJSONObj("json/stage" + i + ".json");
-            if (fileObj.getInt("parts") > 1) {
-                for (int j = 0; j < fileObj.getInt("parts"); j++) {
-                    JSONArray ar = fileObj.getJSONObject("main").getJSONArray(j + "");
-                    for (int h = 0; h < ar.length(); h++) {
-                        geo = ar.getJSONObject(h);
-                        Double lat = geo.getDouble("lat");
-                        Double lng = geo.getDouble("lng");
-                        newPoint = new GeoPoint(lat, lng);
-                        if (stage == i) {
-                            waypointsHighlight.add(newPoint);
-                            finish = true;
-                        } else {
-                            if (finish) {
-                                waypointsFinish.add(newPoint);
-                            } else {
-                                waypointsStart.add(newPoint);
-                            }
-                        }
-                    }
-                    if (fileObj.getJSONObject("alt").has(j + "")) {
-                        waypointsAlt = new ArrayList<>();
-                        JSONArray ar_alt = fileObj.getJSONObject("alt").getJSONArray(j + "");
-                        for (int h = 0; h < ar_alt.length(); h++) {
-                            geo = ar_alt.getJSONObject(h);
-                            Double lat = geo.getDouble("lat");
-                            Double lng = geo.getDouble("lng");
-                            newPoint = new GeoPoint(lat, lng);
-                            waypointsAlt.add(newPoint);
-                        }
-                        Polyline routeOverlayAlt = new Polyline(context);
-                        routeOverlayAlt.setWidth(3.0f);
-                        routeOverlayAlt.setColor(Color.rgb(255, 255, 0));
-                        routeOverlayAlt.setPoints(waypointsAlt);
-                        mapView.getOverlays().add(routeOverlayAlt);
-                    }
-                }
-            } else {
-                JSONArray ar = fileObj.getJSONObject("main").getJSONArray("0");
-                for (int h = 0; h < ar.length(); h++) {
-                    geo = ar.getJSONObject(h);
-                    Double lat = geo.getDouble("lat");
-                    Double lng = geo.getDouble("lng");
-                    newPoint = new GeoPoint(lat, lng);
-                    if (stage == i) {
-                        waypointsHighlight.add(newPoint);
-                        finish = true;
-                    } else {
-                        if (finish) {
-                            waypointsFinish.add(newPoint);
-                        } else {
-                            waypointsStart.add(newPoint);
-                        }
-                    }
-                }
-            }
-        }
-        routeOverlayStart.setColor(Color.rgb(0, 150, 136));
-        routeOverlayStart.setWidth(5.0f);
-        routeOverlayStart.setPoints(waypointsStart);
-        routeOverlayFinish.setColor(Color.rgb(0, 150, 136));
-        routeOverlayFinish.setWidth(5.0f);
-        routeOverlayFinish.setPoints(waypointsFinish);
-        routeOverlayHighlight.setColor(Color.rgb(244, 68, 68));
-        routeOverlayHighlight.setWidth(5.0f);
-        routeOverlayHighlight.setPoints(waypointsHighlight);
-        mapView.getOverlays().add(routeOverlayStart);
-        mapView.getOverlays().add(routeOverlayHighlight);
-        mapView.getOverlays().add(routeOverlayFinish);
-    }
-
-    public void drawCityMarkers(FolderOverlay cityMarkersOverlay) throws JSONException {
-
-        JSONArray routeJArr = dbController.getLocalities();
-        for (int i = 0; i < routeJArr.length(); i++) {
-            JSONObject v = routeJArr.getJSONObject(i);
-            if (v != null) {
-                Double lat = v.getDouble("lat");
-                Double lng = v.getDouble("lng");
-                String title = v.getString("title");
-                cityMarkersOverlay.add(drawCityMarker(lat, lng, title));
-            }
-        }
-        mapView.getOverlays().add(cityMarkersOverlay);
-    }
-
-    public FolderOverlay drawAlbMarkers(FolderOverlay albMarkersOverlay, Location finish) throws JSONException {
-        boolean highlighted = false;
-        JSONObject vh = null;
-        JSONArray albJArr = dbController.getAlbergues(0);
-        for (int i = 0; i < albJArr.length(); i++) {
-            JSONObject v = albJArr.getJSONObject(i);
-            String title = v.getString("title");
-            String desc = v.getString("locality") + " " + v.getString("address");
-            String snippet = v.getString("tel");
-            Double lat = v.getDouble("lat");
-            Double lng = v.getDouble("lng");
-            if (finish != null) {
-                if (lat == finish.getLatitude() && lng == finish.getLongitude()) {
-                    highlighted = true;
-                    vh = v;
-                } else {
-                    albMarkersOverlay.add(drawAlbMarker(lat, lng, title, desc, snippet, false));
-                }
-            } else {
-                albMarkersOverlay.add(drawAlbMarker(lat, lng, title, desc, snippet, false));
-            }
-        }
-        if (highlighted && vh != null) {
-            albMarkersOverlay.add(drawAlbMarker(vh.getDouble("lat"), vh.getDouble("lng"), vh.getString("title"), vh.getString("locality") + " " + vh.getString("address"), vh.getString("tel"), true));
-        }
-        return albMarkersOverlay;
-    }
 
     // *** GMAP Functions
 
@@ -783,6 +591,8 @@ public class DrawingMethods implements AppConstants {
 
     public void drawCityMarkersMF(Layers layers) throws JSONException {
 
+        Bitmap bubble;
+
         JSONArray routeJArr = dbController.getLocalities();
         for (int i = 0; i < routeJArr.length(); i++) {
             JSONObject v = routeJArr.getJSONObject(i);
@@ -790,7 +600,7 @@ public class DrawingMethods implements AppConstants {
                 Double lat = v.getDouble("lat");
                 Double lng = v.getDouble("lng");
                 String title = v.getString("title");
-                org.mapsforge.map.layer.overlay.Marker marker = Utils.createTappableMarker(context, R.drawable.ic_locality_marker, new LatLong(lat, lng));
+                org.mapsforge.map.layer.overlay.Marker marker = createTappableMarker(context, title, R.drawable.ic_locality_marker, new LatLong(lat, lng));
 
                 layers.add(marker);
             }
@@ -800,10 +610,11 @@ public class DrawingMethods implements AppConstants {
     public void drawAlbMarkersMF(Layers layers, Location finish) throws JSONException {
         boolean highlighted = false;
         JSONObject vh = null;
+        String title_high = "";
         JSONArray albJArr = dbController.getAlbergues(0);
         for (int i = 0; i < albJArr.length(); i++) {
             JSONObject v = albJArr.getJSONObject(i);
-            String title = v.getString("title");
+            String title = "Albergue " + v.getString("title");
             String desc = v.getString("locality") + " " + v.getString("address");
             String snippet = v.getString("tel");
             Double lat = v.getDouble("lat");
@@ -812,17 +623,18 @@ public class DrawingMethods implements AppConstants {
                 if (lat == finish.getLatitude() && lng == finish.getLongitude()) {
                     highlighted = true;
                     vh = v;
+                    title_high = title;
                 } else {
-                    org.mapsforge.map.layer.overlay.Marker marker = Utils.createTappableMarker(context, R.drawable.ic_albergue_marker_green, new LatLong(lat, lng));
+                    org.mapsforge.map.layer.overlay.Marker marker = createTappableMarker(context, title, R.drawable.ic_albergue_marker_green, new LatLong(lat, lng));
                     layers.add(marker);
                 }
             } else {
-                org.mapsforge.map.layer.overlay.Marker marker = Utils.createTappableMarker(context, R.drawable.ic_albergue_marker_green, new LatLong(lat, lng));
+                org.mapsforge.map.layer.overlay.Marker marker = createTappableMarker(context, title, R.drawable.ic_albergue_marker_green, new LatLong(lat, lng));
                 layers.add(marker);
             }
         }
         if (highlighted && vh != null) {
-            org.mapsforge.map.layer.overlay.Marker marker = Utils.createTappableMarker(context, R.drawable.ic_albergue_marker_red, new LatLong(finish.getLatitude(), finish.getLongitude()));
+            org.mapsforge.map.layer.overlay.Marker marker = createTappableMarker(context, title_high, R.drawable.ic_albergue_marker_red, new LatLong(finish.getLatitude(), finish.getLongitude()));
             layers.add(marker);
         }
     }

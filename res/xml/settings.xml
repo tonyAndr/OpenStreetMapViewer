@@ -17,7 +17,7 @@
         <ListPreference android:key="pref_key_choose_map"
             android:title="Choose map provider"
             android:summary="Offline or online map"
-            android:defaultValue="1"
+            android:defaultValue="com.tonyandr.caminoguide.gms_tag"
             android:entries="@array/listArray"
             android:entryValues="@array/listValues"/>
         <!--<CheckBoxPreference-->
