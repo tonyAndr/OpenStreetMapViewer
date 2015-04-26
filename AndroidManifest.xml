@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tonyandr.caminoguide" >
+    android:installLocation="preferExternal"
+    package="com.tonyandr.caminoguideoff">
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="22" />
 
     <supports-screens
         android:anyDensity="true"
@@ -18,11 +19,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
 
     <permission
-        android:name="com.tonyandr.caminoguide.permission.MAPS_RECEIVE"
+        android:name="com.tonyandr.caminoguideoff.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
     <uses-feature
@@ -70,27 +70,18 @@
             android:name=".map.MapActivity"
             android:icon="@drawable/ecn_icon"
             android:label="@string/app_name"
-            android:launchMode="singleInstance" >
+            android:launchMode="standard" >
         </activity>
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:launchMode="singleInstance" >
+            android:launchMode="standard" >
         </activity>
-        <service
-            android:name=".settings.MoveService"
-            android:exported="false" />
 
         <activity
             android:name=".stages.StageActivity"
             android:label="@string/title_activity_stage"
-            android:launchMode="singleInstance" >
-        </activity>
-        <activity
-            android:name=".settings.MapManagerActivity"
-            android:label="@string/title_activity_map_manager"
-            android:launchMode="singleInstance"
-            android:parentActivityName=".settings.SettingsActivity" >
+            android:launchMode="standard" >
         </activity>
 
         <service android:name=".utils.DBUpdateService" >
@@ -98,16 +89,11 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDWm6rGejKkVypqdiru5gQWJ0Auu0M-I1s" />
+            android:value="AIzaSyDGac02FtWqSGcj6qXkgAgEVR0UM5QQKgQ" />
 
         <activity
-            android:name=".feedback.FeedbackActivity"
-            android:label="@string/title_activity_feedback"
-            android:launchMode="singleInstance" >
-        </activity>
-        <activity
             android:name=".feedback.AboutActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="standard"
             android:label="@string/title_activity_about" >
         </activity>
     </application>

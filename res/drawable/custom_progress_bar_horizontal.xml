@@ -2,6 +2,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="2dip" />
+            <stroke android:width="2dip" android:color="#fff" />
             <gradient
                 android:startColor="#22ffffff"
                 android:centerColor="#22ffffff"
@@ -26,6 +27,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
+                <stroke android:width="2dip" android:color="#fff" />
                 <corners android:radius="2dip" />
                 <gradient
                     android:startColor="#fff44444"

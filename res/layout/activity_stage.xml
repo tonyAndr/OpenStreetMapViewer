@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.tonyandr.caminoguide.stages.StageActivity">
+        tools:context="com.tonyandr.caminoguideoff.stages.StageActivity">
 
         <include
             android:id="@+id/app_bar"
@@ -19,7 +19,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/app_bar"></FrameLayout>
-
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/km_togo_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="%% KM LEFT..."
+            android:gravity="center"
+            android:textColor="#FFFFFFFF"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:layout_below="@+id/app_bar"
+            android:background="@drawable/item_kmtogo_bg"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="24dp"
+            android:textStyle="bold" />
         <ImageButton
 
             android:id="@+id/getMyLocBtn"
@@ -73,28 +88,16 @@
         <include
             android:id="@+id/progress_drawing_id"
             layout="@layout/drawing_progress" />
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/km_togo_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="%% KM LEFT..."
-            android:gravity="center"
-            android:textColor="#FFFFFFFF"
-            android:padding="8dp"
-            android:textSize="16sp"
-            android:background="@drawable/item_kmtogo_bg"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginBottom="24dp"
-            android:textStyle="bold" />
+
     </RelativeLayout>
 
-
+    <FrameLayout
+        android:id="@+id/feedback_frag_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
     <fragment
         android:id="@+id/fragment_nav_drawer"
-        android:name="com.tonyandr.caminoguide.NavigationDrawerLayout"
+        android:name="com.tonyandr.caminoguideoff.NavigationDrawerLayout"
         android:layout_width="@dimen/nav_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"

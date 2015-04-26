@@ -19,10 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/app_bar"></FrameLayout>
+        <FrameLayout
+            android:id="@+id/feedback_frag_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></FrameLayout>
     </RelativeLayout>
     <fragment
         android:id="@+id/fragment_nav_drawer"
-        android:name="com.tonyandr.caminoguide.NavigationDrawerLayout"
+        android:name="com.tonyandr.caminoguideoff.NavigationDrawerLayout"
         android:layout_width="@dimen/nav_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"

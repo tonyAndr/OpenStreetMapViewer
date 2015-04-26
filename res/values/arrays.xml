@@ -10,4 +10,8 @@
         <item>com.tonyandr.caminoguide.mf_tag</item>
         <!--<item>3</item>-->
     </string-array>
+    <string-array name="map_types_array">
+        <item>Satellite</item>
+        <item>Map</item>
+    </string-array>
 </resources>

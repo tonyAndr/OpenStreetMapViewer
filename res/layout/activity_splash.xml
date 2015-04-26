@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,45 +7,72 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/primaryColor"
-    tools:context="com.tonyandr.caminoguide.SplashActivity">
+    android:orientation="vertical"
+    tools:context="com.tonyandr.caminoguideoff.SplashActivity">
 
 
     <ImageView
+        android:layout_weight="1"
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/splash_text" />
 
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="@style/CustomProgressBarHorizontal"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:layout_marginBottom="100dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/splash_textview"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/progressBar2"
-        android:layout_alignLeft="@+id/progressBar2"
-        android:layout_alignRight="@+id/progressBar2"
-        android:layout_alignTop="@+id/progressBar2"
+    <LinearLayout
         android:gravity="center"
-        android:textColor="#FFF"
-        android:text="" />
-
-    <ProgressBar
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar3"
-        android:layout_marginBottom="85dp"
-        android:layout_alignParentBottom="true"
+        android:layout_height="0dp">
 
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        <LinearLayout
+            android:padding="15dp"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:id="@+id/splash_tv_info"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:layout_margin="10dp"
+                android:text=""/>
+            <ProgressBar
+                android:visibility="visible"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBar3"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ProgressBar
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center"
+                    android:id="@+id/progressBar2"
+                    style="@style/CustomProgressBarHorizontal"
+                    android:layout_width="160dp"
+                    android:progress="100"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/splash_textview"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="#FFF"
+                    android:text="" />
+            </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+</LinearLayout>

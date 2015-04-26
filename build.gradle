@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.1.0'
     }
 }
 
@@ -15,21 +15,24 @@ allprojects {
         mavenLocal()
     }
 }
-
-apply plugin: 'android'
-
 android {
+    signingConfigs {
+        config {
+            keyAlias 'MyReleaseKey'
+            keyPassword '3spanas0l'
+            storeFile file('C:/Users/Tony/signed.keystore')
+            storePassword '3spanas0l'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion '22.0.0'
-
     defaultConfig {
-        applicationId "com.tonyandr.caminoguide"
+        applicationId "com.tonyandr.caminoguideoff"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.1.0"
     }
-
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -44,11 +47,13 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
+            signingConfig signingConfigs.config
         }
         debug {
             debuggable true
+            signingConfig signingConfigs.config
         }
     }
 }
@@ -58,7 +63,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:6.5.87'
     compile 'com.jjoe64:graphview:4.0.0'
     compile 'com.loopj.android:android-async-http:1.4.5'
-    compile 'it.neokree:MaterialTabs:0.11'
     compile 'com.github.traex.rippleeffect:library:1.2.4'
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:recyclerview-v7:22.0.0'

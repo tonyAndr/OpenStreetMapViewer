@@ -95,15 +95,16 @@
     <string name="distance_to_finish">To finish:</string>
     <string name="title_activity_splash">Camino Guide Offline</string>
     <string name="title_activity_feedback">Feedback</string>
-    <string name="notify_suggestion_text">Please, notify us about any mistakes/errors which you will see (e.g. incorrect albergue\'s coordinates or app crash). You can include you current position using checkbox below.</string>
+    <string name="notify_suggestion_text">Found a mistake? Wrong albergue\'s position? Tell us about that! Or maybe you have useful suggestion about app? Share your ideas to us :)</string>
     <string name="drawing_loading_route_text">Drawing route...</string>
     <string name="stage_activity_list_fragment_title">Stages</string>
     <string name="progress_drawing_route">Drawing route...</string>
     <string name="progress_drawing_markers">Drawing markers...</string>
     <string name="send_my_coordinates">Send my location</string>
-    <string name="feedback_thank_you">Thank you!</string>
+    <string name="feedback_thank_you">Success!\nThank you for your opinion!</string>
+    <string name="feedback_error">Something goes wrong :( Have you got an internet connection? Let\'s try again!</string>
+    <string name="feedback_noconnection">No internet connection! Turn on mobile data or Wi-Fi, please.</string>
     <string name="title_activity_about">AboutActivity</string>
-
     <string name="about_text">
 This is your personal guide on Camino Frances. You will never lose your way. You will always find a place to sleep.\n
 Camino Guide has offline maps to navigation without internet connection which are very useful on camino. \n
@@ -130,5 +131,25 @@ This app will show you the distance to the end of the stage, or the selected alb
         \n\n
 
     </string>
+
+
+    <string name="check_license">Check license</string>
+    <string name="checking_license">Checking license...</string>
+    <string name="dont_allow">Don\'t allow the user access</string>
+    <string name="allow">Allow the user access</string>
+    <string name="application_error">Application error: %1$s</string>
+
+    <!-- Unlicensed dialog messages -->
+
+    <string name="unlicensed_dialog_title">Application not licensed</string>
+    <string name="unlicensed_dialog_body">This application is not licensed. Please purchase it from Android Market.</string>
+    <string name="unlicensed_dialog_retry_body">Unable to validate license. Check to see if a network connection is available.</string>
+    <string name="buy_button">Buy app</string>
+    <string name="retry_button">Retry</string>
+    <string name="quit_button">Exit</string>
+    <string name="map_type">Select type</string>
+    <string name="feedback_inprogress">Sending in progress, please wait...</string>
+    <string name="gmap_menu_satellite">Satellite</string>
+    <string name="gmap_menu_mylocation">My location</string>
 
 </resources>

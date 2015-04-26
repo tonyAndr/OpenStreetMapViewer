@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:background="@color/primaryColor"
         android:orientation="vertical"
-        tools:context="com.tonyandr.caminoguide.feedback.AboutActivity">
+        tools:context="com.tonyandr.caminoguideoff.feedback.AboutActivity">
 
         <include
             android:id="@+id/app_bar"
@@ -42,10 +42,13 @@
         </ScrollView>
 
     </LinearLayout>
-
+    <FrameLayout
+        android:id="@+id/feedback_frag_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
     <fragment
         android:id="@+id/fragment_nav_drawer"
-        android:name="com.tonyandr.caminoguide.NavigationDrawerLayout"
+        android:name="com.tonyandr.caminoguideoff.NavigationDrawerLayout"
         android:layout_width="@dimen/nav_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
